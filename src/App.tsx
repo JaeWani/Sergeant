@@ -27,10 +27,6 @@ type Profile = {
 type Result = {
   scores: Record<CareerTypeCode, number>;
   primaryType: string;
-  primaryTypes: string[];
-  secondaryType: string | null;
-  isTie: boolean;
-  isClose: boolean;
   deliveryMessage: string;
   reportPdf: Blob;
 };
@@ -142,7 +138,6 @@ function App() {
       name: prepared.result.name,
       primaryType: prepared.result.primaryType,
       aptitudeDescription: prepared.result.aptitudeDescription,
-      scores: prepared.result.scores,
       documentTexts: prepared.result.documentTexts,
     });
     await uploadSignedPdf(prepared.report.signedUploadUrl, pdf);
@@ -252,12 +247,8 @@ function App() {
 
       setResult({
         scores: prepared.result.scores as Record<CareerTypeCode, number>,
-        primaryType: prepared.result.primaryType,
-        primaryTypes: prepared.result.primaryTypes ?? [prepared.result.primaryType],
-        secondaryType: prepared.result.secondaryType ?? null,
-        isTie: prepared.result.isTie ?? false,
-        isClose: prepared.result.isClose ?? false,
-        deliveryMessage: `${profile.email.trim()}로 결과지를 발송할 준비가 완료되었습니다. 이메일이 도착할 때까지 잠시 기다려 주세요.`,
+      primaryType: prepared.result.primaryType,
+      deliveryMessage: `${profile.email.trim()}로 결과지를 발송할 준비가 완료되었습니다. 이메일이 도착할 때까지 잠시 기다려 주세요.`,
         reportPdf: pdf,
       });
       setMessage('');

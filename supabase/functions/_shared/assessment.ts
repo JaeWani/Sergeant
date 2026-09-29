@@ -10,10 +10,6 @@ export type PreparedSubmission = {
   answers: Record<string, number>;
   scores: Record<TypeCode, number>;
   primaryType: TypeCode;
-  primaryTypes: TypeCode[];
-  secondaryType: TypeCode | null;
-  isTie: boolean;
-  isClose: boolean;
   calculationVersion: string;
 };
 
@@ -32,21 +28,14 @@ export function calculateScores(answers: Record<string, number>) {
     scores[type] += answers[String(questionNumber)];
   }
 
-  const orderedTypes = [...TYPE_ORDER].sort((left, right) => scores[right] - scores[left]);
-  const highestScore = scores[orderedTypes[0]];
-  const primaryTypes = orderedTypes.filter((type) => scores[type] === highestScore);
-  const firstNonPrimary = orderedTypes.find((type) => !primaryTypes.includes(type));
-  const isClose = primaryTypes.length === 1
-    && firstNonPrimary !== undefined
-    && highestScore - scores[firstNonPrimary] <= 2;
+  const highestScore = Math.max(...TYPE_ORDER.map((type) => scores[type]));
+  // The workbook uses MATCH(MAX(...), row, 0), which returns the first score
+  // in its fixed R → I → A → S → E → C column order when scores are tied.
+  const primaryType = TYPE_ORDER.find((type) => scores[type] === highestScore)!;
 
   return {
     scores,
-    primaryType: primaryTypes[0],
-    primaryTypes,
-    secondaryType: isClose ? firstNonPrimary ?? null : null,
-    isTie: primaryTypes.length > 1,
-    isClose,
+    primaryType,
   };
 }
 
@@ -90,6 +79,6 @@ export function validateAndPrepareSubmission(input: unknown): PreparedSubmission
 
   if (Object.keys(rawAnswers).length !== 72) throw new Error('설문 문항 수가 올바르지 않습니다.');
 
-  const { scores, primaryType, primaryTypes, secondaryType, isTie, isClose } = calculateScores(answers);
-  return { name, commissionYear, mbti, email, answers, scores, primaryType, primaryTypes, secondaryType, isTie, isClose, calculationVersion };
+  const { scores, primaryType } = calculateScores(answers);
+  return { name, commissionYear, mbti, email, answers, scores, primaryType, calculationVersion };
 }

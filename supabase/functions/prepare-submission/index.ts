@@ -16,18 +16,13 @@ Deno.serve(async (request) => {
     const { data: content, error: contentError } = await supabase
       .from('type_contents')
       .select('type_code, version, label, detail')
-      .in('type_code', prepared.primaryTypes)
+      .eq('type_code', prepared.primaryType)
       .eq('is_active', true)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-    if (contentError || !content?.length) throw new Error('결과 해설 콘텐츠를 찾을 수 없습니다.');
-    const contentsByCode = new Map();
-    for (const item of content) if (!contentsByCode.has(item.type_code)) contentsByCode.set(item.type_code, item);
-    const primaryContents = prepared.primaryTypes.map((type) => contentsByCode.get(type)).filter(Boolean);
-    if (primaryContents.length !== prepared.primaryTypes.length) throw new Error('결과 해설 콘텐츠를 찾을 수 없습니다.');
-    const primaryLabels = primaryContents.map((item) => item!.label);
-    const primaryDescription = primaryContents.map((item) => item!.detail).join('\n\n');
-    const secondaryContent = prepared.secondaryType ? contentsByCode.get(prepared.secondaryType) : null;
+    if (contentError || !content) throw new Error('결과 해설 콘텐츠를 찾을 수 없습니다.');
 
     const { data: documentTexts, error: documentTextsError } = await supabase
       .from('report_document_texts')
@@ -47,11 +42,14 @@ Deno.serve(async (request) => {
         p_answers: prepared.answers,
         p_scores: prepared.scores,
         p_primary_type: prepared.primaryType,
-        p_primary_types: prepared.primaryTypes,
-        p_secondary_type: prepared.secondaryType,
-        p_is_tie: prepared.isTie,
-        p_is_close: prepared.isClose,
-        p_content_version: primaryContents[0]!.version,
+        // Keep the existing RPC signature for recorded submissions. These
+        // compatibility fields are neutral because the workbook has one result
+        // only; a tied maximum resolves to the first type in TYPE_ORDER.
+        p_primary_types: [prepared.primaryType],
+        p_secondary_type: null,
+        p_is_tie: false,
+        p_is_close: false,
+        p_content_version: content.version,
         p_template_version: TEMPLATE_VERSION,
         p_storage_path: storagePath,
       },
@@ -74,14 +72,10 @@ Deno.serve(async (request) => {
       },
       result: {
         name: prepared.name,
-        primaryType: primaryLabels.join(' · '),
-        primaryTypes: primaryLabels,
-        secondaryType: secondaryContent?.label ?? null,
-        isTie: prepared.isTie,
-        isClose: prepared.isClose,
-        aptitudeDescription: primaryDescription,
+        primaryType: content.label,
+        aptitudeDescription: content.detail,
         scores: prepared.scores,
-        contentVersion: primaryContents[0]!.version,
+        contentVersion: content.version,
         documentTexts: Object.fromEntries((documentTexts ?? []).map((item) => [item.content_key, item.text])),
       },
     }, 201);

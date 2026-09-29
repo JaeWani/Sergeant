@@ -23,13 +23,7 @@ const careerTypeCodes = ['R', 'I', 'A', 'S', 'E', 'C'] as const;
 type CareerTypeCode = typeof careerTypeCodes[number];
 const reportDocumentKeys = [
   'document_title', 'profile_name_label', 'profile_type_label',
-  'primary_heading', 'intro', 'notice', 'reference_heading',
-  'reference_r_label', 'reference_r_description',
-  'reference_i_label', 'reference_i_description',
-  'reference_a_label', 'reference_a_description',
-  'reference_s_label', 'reference_s_description',
-  'reference_e_label', 'reference_e_description',
-  'reference_c_label', 'reference_c_description',
+  'primary_heading',
 ] as const;
 type ReportDocumentKey = typeof reportDocumentKeys[number];
 
@@ -115,7 +109,8 @@ async function getReportDocument(supabase: ReturnType<typeof getSupabaseAdmin>) 
     .select('content_key, text, updated_at')
     .order('content_key');
   if (error) throw new Error(`결과지 문구를 불러오지 못했습니다. ${error.message}`);
-  return reportDocumentStatus((data ?? []) as ReportDocumentTextRow[]);
+  return reportDocumentStatus(((data ?? []) as ReportDocumentTextRow[])
+    .filter((row) => reportDocumentKeys.includes(row.content_key)));
 }
 
 async function saveReportDocument(supabase: ReturnType<typeof getSupabaseAdmin>, value: unknown) {

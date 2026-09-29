@@ -12,10 +12,6 @@ export type PreparedSubmissionResponse = {
   result: {
     name: string;
     primaryType: string;
-    primaryTypes?: string[];
-    secondaryType?: string | null;
-    isTie?: boolean;
-    isClose?: boolean;
     aptitudeDescription: string;
     scores: Record<string, number>;
     contentVersion: string;

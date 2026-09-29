@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="부사관 진로적성검사와 개인별 결과지를 제공하는 서비스"
+    />
+    <meta name="theme-color" content="#102a43" />
+    <meta name="color-scheme" content="light" />
+    <title>부사관 진로적성검사</title>
+  </head>
+  <body>
+    <noscript>
+      <p>이 서비스를 이용하려면 JavaScript를 활성화해 주세요.</p>
+    </noscript>
+
+    <div id="root"></div>
+
+    <!--
+      Vite/React 진입점
+
+      권장 소스 구조
+      src/
+        main.tsx                 앱 부트스트랩
+        App.tsx                  라우트와 전역 레이아웃
+        features/
+          survey/                설문 UI, 응답 검증, 점수 계산
+          result/                유형·해설 표시, PDF 렌더링 데이터 생성
+          report/                브로슈어 PDF 전용 템플릿
+        lib/
+          supabase.ts            Supabase 브라우저 클라이언트
+          scoring.ts              72문항 성향 점수 계산 규칙
+          api.ts                  prepare/complete API 호출
+        styles/                  전역 스타일과 디자인 토큰
+    -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

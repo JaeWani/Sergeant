@@ -297,12 +297,7 @@ function App() {
         <section className="result-card" aria-labelledby="result-title">
           <p className="eyebrow">부사관 진로적성검사</p>
           <h1 id="result-title">{profile.name.trim()}님의 설문 결과</h1>
-          <p className="result-lead">
-            {result.isTie ? <>공동 주 성향은 <strong>{result.primaryTypes.join(', ')}</strong>입니다.</> : <>주요 진로 유형은 <strong>{result.primaryType}</strong>입니다.</>}
-          </p>
-          {result.isClose && result.secondaryType && (
-            <p className="result-note">보조 성향은 <strong>{result.secondaryType}</strong>이며, 주 성향과의 점수 차이가 2점 이내입니다.</p>
-          )}
+          <p className="result-lead">주요 진로 유형은 <strong>{result.primaryType}</strong>입니다.</p>
 
           <div className="score-grid" aria-label="유형별 점수">
             {careerTypes.map((type) => (
@@ -313,10 +308,6 @@ function App() {
               </article>
             ))}
           </div>
-          <p className="tie-break-note">
-            참고 : 검사결과 2개 이상 유형으로 추천 시 활용성이 넓은 유형으로 최종 결정합니다.
-          </p>
-
           <section className="result-delivery" aria-labelledby="delivery-title">
             <div className="result-delivery-heading">
               <h2 id="delivery-title">결과지 받기</h2>
@@ -363,19 +354,7 @@ function App() {
         {page === 0 && (
           <section className="profile-section" aria-labelledby="profile-title">
             <h2 id="profile-title">개인정보 및 기본 정보</h2>
-            <p className="section-description">
-              개인정보 수집·이용에 동의한 응답자에게만 결과지를 이메일로 발송합니다. 결과는 자기이해와 진로 상담을 돕기 위한 참고 자료이며, 인사 선발·보직·진급을 자동으로 결정하는 근거로 사용하지 않습니다.
-            </p>
-
-            <div className="privacy-notice">
-              <strong>개인정보 처리 안내</strong>
-              <ul>
-                <li>수집 항목: 이름 또는 별칭, 임관년도, 선택 MBTI, 이메일, 설문 응답</li>
-                <li>이용 목적: 검사 결과 생성·PDF 제공·이메일 발송 및 서비스 운영</li>
-                <li>보유 기간과 삭제 요청 절차는 운영 정책 확정 후 안내합니다.</li>
-                <li>동의하지 않으면 결과지 생성과 이메일 수신을 이용할 수 없습니다.</li>
-              </ul>
-            </div>
+            <p className="section-description">개인정보 제공에 동의한 응답자에게만 결과지를 이메일로 발송합니다.</p>
 
             <label className="consent-field">
               <input

@@ -313,6 +313,9 @@ function App() {
               </article>
             ))}
           </div>
+          <p className="tie-break-note">
+            참고 : 검사결과 2개 이상 유형으로 추천 시 활용성이 넓은 유형으로 최종 결정합니다.
+          </p>
 
           <section className="result-delivery" aria-labelledby="delivery-title">
             <div className="result-delivery-heading">
@@ -356,17 +359,6 @@ function App() {
             </div>
           )}
         </header>
-
-        <section className="progress-section" aria-label="설문 진행 상황">
-          <div className="progress-label">
-            <span>응답 완료 {answeredCount} / {questions.length}</span>
-            <span>{completion}%</span>
-          </div>
-          <div className="progress-track" aria-hidden="true">
-            <div className="progress-value" style={{ width: `${completion}%` }} />
-          </div>
-          <p>문항 묶음 {page + 1} / {pageCount}</p>
-        </section>
 
         {page === 0 && (
           <section className="profile-section" aria-labelledby="profile-title">
@@ -475,6 +467,17 @@ function App() {
         </section>
 
         {message && <p className="form-message" role="alert">{message}</p>}
+
+        <section className="progress-section" aria-label="설문 진행 상황">
+          <div className="progress-label">
+            <span>응답 완료 {answeredCount} / {questions.length}</span>
+            <span>{completion}%</span>
+          </div>
+          <div className="progress-track" aria-hidden="true">
+            <div className="progress-value" style={{ width: `${completion}%` }} />
+          </div>
+          <p>문항 묶음 {page + 1} / {pageCount}</p>
+        </section>
 
         <footer className="survey-actions">
           <button className="secondary-button" type="button" onClick={goToPreviousPage} disabled={page === 0}>

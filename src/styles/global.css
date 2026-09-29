@@ -398,7 +398,14 @@ h2 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 12px;
+}
+
+.tie-break-note {
+  margin: 0 0 28px;
+  color: #627d98;
+  font-size: 0.88rem;
+  line-height: 1.6;
 }
 
 .score-card {
